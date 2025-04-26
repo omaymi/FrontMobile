@@ -1,14 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/loginbkg"
+    android:background="@drawable/design"
     tools:context=".LoginActivity">
 
     <androidx.cardview.widget.CardView
@@ -17,23 +15,37 @@
         android:layout_margin="30dp"
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp"
-        android:background="@drawable/custom_edittext">
+        app:cardBackgroundColor="#80FFFFFF">
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_height="533dp"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="28dp">
 
+            <!-- Ajout de l'image au-dessus du formulaire -->
+
+
+            <ImageView
+                android:id="@+id/loginImage"
+                android:layout_width="255dp"
+                android:layout_height="85dp"
+                android:layout_gravity="center"
+                android:contentDescription="Login image"
+                android:scaleType="centerCrop"
+                android:src="@drawable/logo_transpa" />
 
             <TextView
                 android:id="@+id/loginText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Se connecter"
                 android:textAlignment="center"
-                android:textColor="@color/purple"
+                android:textColor="#853504"
                 android:textSize="36sp"
                 android:textStyle="bold" />
 
@@ -44,11 +56,11 @@
                 android:layout_marginTop="40dp"
                 android:background="@drawable/custom_edittext"
                 android:drawablePadding="8dp"
-                android:textColorHint="@color/white"
                 android:hint="Username"
                 android:padding="8dp"
-                android:textColor="@color/white"
-                android:textColorHighlight="@color/cardview_dark_background" />
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/cardview_dark_background"
+                android:textColorHint="#6B3004" />
 
             <EditText
                 android:id="@+id/password"
@@ -58,18 +70,18 @@
                 android:background="@drawable/custom_edittext"
                 android:drawablePadding="8dp"
                 android:hint="Password"
-                android:textColorHint="@color/white"
                 android:inputType="textPassword"
                 android:padding="8dp"
                 android:textColor="@color/white"
-                android:textColorHighlight="@color/cardview_dark_background" />
+                android:textColorHighlight="@color/cardview_dark_background"
+                android:textColorHint="#7E2F07" />
 
             <Button
                 android:id="@+id/loginButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
-                android:backgroundTint="@color/purple"
+                android:backgroundTint="#994303"
                 android:text="Login"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
@@ -78,15 +90,6 @@
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="Not yet registered? SignUp Now"
-        android:textSize="14sp"
-        android:textAlignment="center"
-        android:id="@+id/signupText"
-        android:textColor="@color/purple"
-        android:layout_marginBottom="20dp"/>
+
 
 </LinearLayout>
