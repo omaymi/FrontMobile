@@ -58,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "Réponse reçue: $response")
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                 // Redirection vers AdministrateurActivity
-                val intent = Intent(this, AdministrateurActivity::class.java)
+                val intent = Intent(this, NavActivity::class.java)
                 startActivity(intent)
                 finish() // Ferme LoginActivity pour empêcher le retour
             },

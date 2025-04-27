@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+    <!-- Spinner Filière -->
+    <Spinner
+        android:id="@+id/spinnerFilieres"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:prompt="@string/choisir_filiere"/>
+
+    <!-- Spinner Module (dynamique) -->
+    <Spinner
+        android:id="@+id/spinnerModules"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:prompt="@string/choisir_module"/>
+    <!-- Nom -->
+    <EditText
+        android:id="@+id/editNomProfesseur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nom du professeur"
+        android:inputType="textPersonName"/>
+
+    <!-- Email -->
+    <EditText
+        android:id="@+id/editEmailProfesseur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email du professeur"
+        android:layout_marginTop="8dp"
+        android:inputType="textEmailAddress"/>
+
+
+
+    <!-- Bouton Valider -->
+    <Button
+        android:id="@+id/btnValiderProfesseur"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Valider"/>
+</LinearLayout>
