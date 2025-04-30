@@ -78,7 +78,7 @@ class NavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                 .replace(R.id.fragment_container, ProfesseurFragment())
                 .commit()
             R.id.nav_about -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, AboutFragment())
+                .replace(R.id.fragment_container, FacialFragement())
                 .commit()
         }
         drawerLayout.closeDrawer(GravityCompat.START)

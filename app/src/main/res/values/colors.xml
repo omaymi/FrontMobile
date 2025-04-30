@@ -13,4 +13,17 @@
     <color name="main_background">#19191b</color>
     <color name="pink">#19191b</color>
     <color name="green">#34e3c4</color>
+    <color name="scan_active">#FF0000</color>
+    <color name="scan_inactive">#2196F3</color>
+    <color name="red">#FF0000</color>
+    <color name="design_default_color_primary">#6200EE</color>
+    <color name="beige_clair">#FFF8DC</color>
+    <color name="beige_fonce">#D2B48C</color>
+    <!-- Couleur marron standard -->
+    <color name="brown">#A52A2A</color>
+    <color name="cuivre">#D4AF37</color>
+    <!-- Variantes optionnelles -->
+    <color name="brown_dark">#654321</color>      <!-- Marron foncé -->
+    <color name="saddle_brown">#8B4513</color>
+
 </resources>

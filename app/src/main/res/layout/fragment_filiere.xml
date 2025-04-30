@@ -2,18 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp">
+
+    <!-- Titre principal -->
+    <TextView
+        android:id="@+id/titrePage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📚 Ajouter une nouvelle filière"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/brown_dark"
+        android:layout_marginBottom="24dp"/>
 
     <EditText
         android:id="@+id/nomFiliere"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nom de la filière"/>
+        android:hint="Nom de la filière"
+        android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btnFiliere"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Valider"/>
+        android:text="Valider"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/cuivre"
+        android:layout_marginBottom="24dp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liste des filières"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <ListView
+        android:id="@+id/listViewFilieres"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 </LinearLayout>

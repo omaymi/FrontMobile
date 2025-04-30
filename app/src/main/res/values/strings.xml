@@ -14,4 +14,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="choisir_filiere">Choisir une filière</string>
     <string name="choisir_module">Choisir un module</string>
+    <string name="scanner">Scanner</string>
+    <string name="todo">TODO</string>
+    <string name="d_marrer_le_scan">Démarrer le scan</string>
+    <string name="marquer_l_absence">Marquer l\'absence</string>
+
 </resources>

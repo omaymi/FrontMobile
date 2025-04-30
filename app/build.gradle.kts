@@ -33,6 +33,13 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    packagingOptions {
+        resources.excludes += setOf(
+            "**/libmagtsync.so",
+            "META-INF/INDEX.LIST",
+            "META-INF/io.netty.versions.properties"
+        )
+    }
 }
 
 dependencies {
@@ -46,5 +53,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.volley)
+    implementation(libs.java.websocket)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.face.detection)
+    implementation(libs.androidx.camera.core.v130)
+    implementation(libs.androidx.camera.lifecycle.v130)
+    implementation(libs.core)
+
+    implementation(libs.okhttp)
 
 }

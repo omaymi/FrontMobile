@@ -1,23 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center_horizontal">
 
+    <!-- Titre principal -->
+    <TextView
+        android:id="@+id/titrePageModule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📘 Ajouter un module"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/brown_dark"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Spinner des filières -->
     <Spinner
         android:id="@+id/spinnerFilieres"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
 
+    <!-- Champ nom du module -->
     <EditText
         android:id="@+id/nomModule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nom du module"/>
+        android:hint="Nom du module"
+        android:layout_marginBottom="16dp"/>
 
+    <!-- Bouton de validation -->
     <Button
         android:id="@+id/btnModule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Valider"/>
+        android:text="Valider"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/cuivre"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Titre liste des modules -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liste des modules"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Liste des modules -->
+    <ListView
+        android:id="@+id/listeModules"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 </LinearLayout>

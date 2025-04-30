@@ -3,48 +3,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center_horizontal">
 
+    <!-- Titre principal -->
+    <TextView
+        android:id="@+id/titrePageProf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="👨‍🏫 Ajouter un professeur"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/brown_dark"
+        android:layout_marginBottom="24dp"/>
 
     <!-- Spinner Filière -->
     <Spinner
         android:id="@+id/spinnerFilieres"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
         android:prompt="@string/choisir_filiere"/>
 
-    <!-- Spinner Module (dynamique) -->
+    <!-- Spinner Module -->
     <Spinner
         android:id="@+id/spinnerModules"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:prompt="@string/choisir_module"/>
-    <!-- Nom -->
+
+    <!-- Champ Nom -->
     <EditText
         android:id="@+id/editNomProfesseur"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nom du professeur"
-        android:inputType="textPersonName"/>
+        android:inputType="textPersonName"
+        android:layout_marginBottom="12dp"/>
 
-    <!-- Email -->
+    <!-- Champ Email -->
     <EditText
         android:id="@+id/editEmailProfesseur"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email du professeur"
-        android:layout_marginTop="8dp"
-        android:inputType="textEmailAddress"/>
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="16dp"/>
 
-
-
-    <!-- Bouton Valider -->
+    <!-- Bouton de validation -->
     <Button
         android:id="@+id/btnValiderProfesseur"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Valider"/>
+        android:text="Valider"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/cuivre"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Titre liste des professeurs -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liste des professeurs"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Liste des professeurs -->
+    <ListView
+        android:id="@+id/listeProfesseurs"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 </LinearLayout>

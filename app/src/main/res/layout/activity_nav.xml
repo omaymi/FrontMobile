@@ -19,7 +19,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/lavender"
+            android:background="@color/brown_dark"
             android:elevation="4dp">
 
             <ImageButton
@@ -39,15 +39,17 @@
 
     </LinearLayout>
 
-    <!-- NavigationView -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_menu"
-        app:itemIconTint="@color/lavender"
-        app:itemTextColor="@color/lavender"/>
+        app:itemIconTint="@color/brown_dark"
+        app:itemTextColor="@color/brown_dark"
+        app:menu="@menu/nav_menu" />
+
+
+    <!-- NavigationView -->
 
 </androidx.drawerlayout.widget.DrawerLayout>

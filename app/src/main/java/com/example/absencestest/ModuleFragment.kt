@@ -45,7 +45,7 @@ class ModuleFragment : Fragment() {
     }
 
     private fun fetchFilieres() {
-        val url = "http://10.0.2.2:5000/filieres"
+        val url = "http://100.70.32.195:5000/filieres"
 
         Log.d(TAG, "Envoi de la requête GET à $url")
 
@@ -98,7 +98,7 @@ class ModuleFragment : Fragment() {
 
         val filiereId = filiereIdList[position]
 
-        val url = "http://10.0.2.2:5000/modules"
+        val url = "http://100.70.32.195:5000/modules"
 
         val jsonBody = JSONObject()
         jsonBody.put("nom", nomModule)
