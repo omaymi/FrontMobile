@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#eeeeee"
+    android:padding="8dp"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/textViewInfos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Prof: -- | Module: -- | Salle: -- | Filière: --"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/textViewDateHeure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date: -- | Début: -- | Fin: --"
+        android:textSize="14sp" />
+</LinearLayout>

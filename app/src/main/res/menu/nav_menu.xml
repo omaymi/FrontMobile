@@ -23,9 +23,9 @@
             android:title="Professeur"/>
 
         <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/nav_facial"
-            android:title="Facial detection"/>
+            android:id="@+id/nav_seance"
+            android:icon="@drawable/nav_seance"
+            android:title="Seance"/>
     </group>
     <item
         android:title="">
