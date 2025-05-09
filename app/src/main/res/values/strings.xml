@@ -18,5 +18,9 @@
     <string name="todo">TODO</string>
     <string name="d_marrer_le_scan">Démarrer le scan</string>
     <string name="marquer_l_absence">Marquer l\'absence</string>
+    <string name="ajouter_un_professeur">👨‍🏫 Ajouter un professeur</string>
+    <string name="nom_du_professeur">Nom du professeur</string>
+    <string name="email_du_professeur">Email du professeur</string>
+    <string name="valider">Valider</string>
 
 </resources>
