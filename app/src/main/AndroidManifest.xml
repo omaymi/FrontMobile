@@ -43,6 +43,11 @@
 
         <activity android:name=".ListSeanceScanActivity" />
 
+        <activity
+            android:name=".NavActivityProfe"
+            android:exported="false" />
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.absencestest.fileprovider"
