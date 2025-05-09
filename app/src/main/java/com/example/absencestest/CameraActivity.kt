@@ -43,14 +43,19 @@ class CameraActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_camera)
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             Log.e("CameraActivity", "Exception non gérée : ${throwable.message}", throwable)
             runOnUiThread {
                 Toast.makeText(this, "Erreur : ${throwable.message}", Toast.LENGTH_LONG).show()
             }
         }
-        setContentView(R.layout.activity_camera)
+
+
 
         scanButton = findViewById(R.id.btnScan)
         previewView = findViewById(R.id.previewView)
