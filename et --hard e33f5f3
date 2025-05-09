@@ -1,0 +1,13 @@
+[33ma59a0ea[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: pull: Fast-forward
+[33me33f5f3[m HEAD@{1}: commit: cc
+[33mb263aed[m HEAD@{2}: commit: liste seances
+[33m204a000[m HEAD@{3}: commit: add seance
+[33m79da607[m HEAD@{4}: pull origin main: Fast-forward
+[33mb719c48[m HEAD@{5}: pull origin main: Fast-forward
+[33mfca80fc[m HEAD@{6}: reset: moving to HEAD
+[33mfca80fc[m HEAD@{7}: commit: Premier commit
+[33md65b2a0[m HEAD@{8}: commit: Replace all project
+[33mf1ebff9[m HEAD@{9}: commit: login
+[33m5d0e61e[m HEAD@{10}: pull origin main: Fast-forward
+[33m50336f4[m HEAD@{11}: Branch: renamed refs/heads/master to refs/heads/main
+[33m50336f4[m HEAD@{13}: commit (initial): Premier commit
