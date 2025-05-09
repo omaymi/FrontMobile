@@ -1,6 +1,7 @@
 package com.example.absencestest
 
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,52 +21,84 @@ class ProfesseurFragment : Fragment() {
     private lateinit var spinnerModules: Spinner
     private lateinit var editNomProfesseur: EditText
     private lateinit var editEmailProfesseur: EditText
+    private lateinit var editMotPassProfesseur: EditText
     private lateinit var btnValiderProfesseur: Button
+    private lateinit var ivTogglePassword: ImageView
 
     private val TAG = "ProfesseurFragment"
+    private val BASE_URL = "http://192.168.43.167:5000"
+    private var isPasswordVisible = false
 
-    private val filiereList = mutableListOf<String>()      // Pour afficher dans le spinner des filières
-    private val filiereIdList = mutableListOf<Int>()        // Pour stocker les id des filières
-
-    private val moduleList = mutableListOf<String>()        // Pour afficher dans le spinner des modules
-    private val moduleIdList = mutableListOf<Int>()          // Pour stocker les id des modules
+    private val filiereList = mutableListOf<String>()
+    private val filiereIdList = mutableListOf<Int>()
+    private val moduleList = mutableListOf<String>()
+    private val moduleIdList = mutableListOf<Int>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_professeur, container, false)
+        setupViews(view)
+        setupListeners()
+        fetchFilieres()
+        return view
+    }
 
-        // Initialiser les vues
+    private fun setupViews(view: View) {
         spinnerFilieres = view.findViewById(R.id.spinnerFilieres)
         spinnerModules = view.findViewById(R.id.spinnerModules)
         editNomProfesseur = view.findViewById(R.id.editNomProfesseur)
         editEmailProfesseur = view.findViewById(R.id.editEmailProfesseur)
+        editMotPassProfesseur = view.findViewById(R.id.editMotPassProfesseur)
         btnValiderProfesseur = view.findViewById(R.id.btnValiderProfesseur)
+        ivTogglePassword = view.findViewById(R.id.ivTogglePassword)
 
-        // Récupérer les filières et les modules
-        fetchFilieres()
-
-        // Mettre à jour les modules lorsque la filière est sélectionnée
-        spinnerFilieres.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parentView: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val filiereId = filiereIdList[position]
-                fetchModulesByFiliere(filiereId)  // Récupérer les modules pour cette filière
+        editMotPassProfesseur.apply {
+            showSoftInputOnFocus = false
+            setOnClickListener {
+                val generatedPassword = genererMotDePasseAutomatique()
+                setText(generatedPassword)
+                Toast.makeText(context, "Mot de passe généré !", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
 
-            override fun onNothingSelected(parentView: AdapterView<*>) {}
+    private fun setupListeners() {
+        ivTogglePassword.setOnClickListener { togglePasswordVisibility() }
+
+        spinnerFilieres.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                if (position != Spinner.INVALID_POSITION) {
+                    fetchModulesByFiliere(filiereIdList[position])
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // Valider et enregistrer le professeur
-        btnValiderProfesseur.setOnClickListener {
-            enregistrerProfesseur()
-        }
+        btnValiderProfesseur.setOnClickListener { enregistrerProfesseur() }
+    }
 
-        return view
+    private fun genererMotDePasseAutomatique(): String {
+        val caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%"
+        return (1..10).map { caracteres.random() }.joinToString("")
+    }
+
+    private fun togglePasswordVisibility() {
+        isPasswordVisible = !isPasswordVisible
+        editMotPassProfesseur.inputType = if (isPasswordVisible) {
+            ivTogglePassword.setImageResource(R.drawable.ic_visibility)
+            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+        } else {
+            ivTogglePassword.setImageResource(R.drawable.ic_visibility_off)
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        editMotPassProfesseur.setSelection(editMotPassProfesseur.text.length)
     }
 
     private fun fetchFilieres() {
         val url = "http://192.168.134.106:5000/filieres"
+
 
         Log.d(TAG, "Envoi de la requête GET à $url")
 
@@ -154,6 +187,7 @@ class ProfesseurFragment : Fragment() {
     private fun enregistrerProfesseur() {
         val nomProfesseur = editNomProfesseur.text.toString().trim()
         val emailProfesseur = editEmailProfesseur.text.toString().trim()
+        val MotPassProfesseur = editMotPassProfesseur.text.toString().trim()
         val positionFiliere = spinnerFilieres.selectedItemPosition
         val positionModule = spinnerModules.selectedItemPosition
 
@@ -172,6 +206,7 @@ class ProfesseurFragment : Fragment() {
         jsonBody.put("email", emailProfesseur)
         jsonBody.put("filiere_id", filiereId)
         jsonBody.put("module_id", moduleId)
+        jsonBody.put("mot_de_passe", MotPassProfesseur)
 
         Log.d(TAG, "Envoi de la requête POST à $url avec données: $jsonBody")
 
@@ -184,6 +219,7 @@ class ProfesseurFragment : Fragment() {
                 // Nettoyer les champs
                 editNomProfesseur.text.clear()
                 editEmailProfesseur.text.clear()
+                editMotPassProfesseur.text.clear()
                 spinnerFilieres.setSelection(0)
                 spinnerModules.setSelection(0)
             },
