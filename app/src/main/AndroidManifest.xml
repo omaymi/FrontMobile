@@ -21,6 +21,9 @@
             android:name=".NavActivity"
             android:exported="false" />
         <activity
+            android:name=".NavActivityProfe"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 
