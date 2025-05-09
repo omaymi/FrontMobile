@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun sendLoginRequest(email: String, password: String) {
-        val url = "http://100.89.160.199:5000/login"
+        val url = "http://192.168.134.106:5000/login"
 //        val url = "http://10.11.132.31:5000/login"
 
         val jsonBody = JSONObject()

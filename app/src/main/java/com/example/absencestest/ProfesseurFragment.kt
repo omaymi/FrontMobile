@@ -65,7 +65,7 @@ class ProfesseurFragment : Fragment() {
     }
 
     private fun fetchFilieres() {
-        val url = "http://100.89.160.199:5000/filieres"
+        val url = "http://192.168.134.106:5000/filieres"
 
         Log.d(TAG, "Envoi de la requête GET à $url")
 
@@ -86,7 +86,7 @@ class ProfesseurFragment : Fragment() {
     }
 
     private fun fetchModulesByFiliere(filiereId: Int) {
-        val url = "http://100.89.160.199:5000/modules/filiere/$filiereId"  // Mise à jour de l'URL pour correspondre à la route Flask
+        val url = "http://192.168.134.106:5000/modules/filiere/$filiereId"  // Mise à jour de l'URL pour correspondre à la route Flask
 
         Log.d(TAG, "Envoi de la requête GET à $url")
 
@@ -165,7 +165,7 @@ class ProfesseurFragment : Fragment() {
         val filiereId = filiereIdList[positionFiliere]
         val moduleId = moduleIdList[positionModule]
 
-        val url = "http://100.89.160.199:5000/professeurs"  // Modifiez cette URL si nécessaire
+        val url = "http://192.168.134.106:5000/professeurs"  // Modifiez cette URL si nécessaire
 
         val jsonBody = JSONObject()
         jsonBody.put("nom", nomProfesseur)

@@ -14,6 +14,7 @@ import org.json.JSONObject
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 
 class ListSeanceScanActivity : AppCompatActivity() {
 
@@ -46,6 +47,31 @@ class ListSeanceScanActivity : AppCompatActivity() {
                 holderView.date.text = seance.getString("date")
                 holderView.heureDebut.text = seance.getString("heure_debut")
                 holderView.heureFin.text = seance.getString("heure_fin")
+
+                holderView.iconDelete.setOnClickListener {
+                    val seanceId = seance.getInt("id") // Assure-toi que chaque séance a un champ "id"
+                    val deleteUrl = "http://192.168.134.106:5000/seance/$seanceId"
+
+                    val requestQueue = Volley.newRequestQueue(this@ListSeanceScanActivity)
+
+                    val deleteRequest = object : com.android.volley.toolbox.StringRequest(
+                        Method.DELETE, deleteUrl,
+                        { response ->
+                            // Supprimer de la liste
+                            seancesList.removeAt(position)
+                            notifyItemRemoved(position)
+                            notifyItemRangeChanged(position, seancesList.size)
+                            Toast.makeText(this@ListSeanceScanActivity, "Séance supprimée", Toast.LENGTH_SHORT).show()
+                        },
+                        { error ->
+                            Toast.makeText(this@ListSeanceScanActivity, "Erreur suppression", Toast.LENGTH_SHORT).show()
+                            Log.e(TAG, "Erreur DELETE: ${error.message}")
+                        }
+                    ) {}
+
+                    requestQueue.add(deleteRequest)
+                }
+
             }
 
             override fun getItemCount(): Int = seancesList.size
@@ -56,7 +82,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
     }
 
     private fun fetchSeances() {
-        val url = "http://100.89.160.199:5000/seance"
+        val url = "http://192.168.134.106:5000/seance"
 
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -83,5 +109,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
         val date = itemView.findViewById<TextView>(R.id.date)
         val heureDebut = itemView.findViewById<TextView>(R.id.heureDebut)
         val heureFin = itemView.findViewById<TextView>(R.id.heureFin)
+        val iconDelete = itemView.findViewById<ImageView>(R.id.iconDelete)
+
     }
 }
