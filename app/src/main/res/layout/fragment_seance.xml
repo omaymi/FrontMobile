@@ -34,13 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="12dp">
 
         <Spinner
             android:id="@+id/spinnerProfessor"
@@ -48,13 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <Spinner
-            android:id="@+id/spinnerSalle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp" />
     </LinearLayout>
+
 
     <EditText
         android:id="@+id/editDateSeance"
@@ -87,6 +75,29 @@
             android:hint="Heure fin (HH:MM:SS)" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btnCheckSalles"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Vérifier dispo des salles" />
+
+        <Spinner
+            android:id="@+id/spinnerSalle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+
     <Button
         android:id="@+id/btnValiderSeance"
         android:layout_width="wrap_content"
@@ -96,7 +107,8 @@
         android:text="Créer la séance"
         android:layout_marginBottom="24dp" />
 
-    <TextView
+    <Button
+        android:id="@+id/btnListSeances"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="📋 Liste des séances"
@@ -104,9 +116,5 @@
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerSeances"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+
 </LinearLayout>

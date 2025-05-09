@@ -1,24 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#eeeeee"
-    android:padding="8dp"
-    android:layout_marginBottom="8dp">
+    card_view:cardCornerRadius="8dp"
+    card_view:cardElevation="4dp"
+    android:layout_margin="8dp"
+    android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/textViewInfos"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Prof: -- | Module: -- | Salle: -- | Filière: --"
-        android:textStyle="bold"
-        android:textSize="14sp" />
+        android:orientation="vertical"
+        android:padding="12dp">
 
-    <TextView
-        android:id="@+id/textViewDateHeure"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Date: -- | Début: -- | Fin: --"
-        android:textSize="14sp" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/professeur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Professeur"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/module"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Module"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/salle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salle"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/heureDebut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Heure de début"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/heureFin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Heure de fin"
+            android:textSize="14sp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

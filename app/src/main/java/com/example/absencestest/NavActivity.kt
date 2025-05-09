@@ -80,6 +80,9 @@ class NavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             R.id.nav_seance -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SeanceFragment())
                 .commit()
+            R.id.nav_salle -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SalleFragment())
+                .commit()
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true

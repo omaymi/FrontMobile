@@ -1,5 +1,6 @@
 package com.example.absencestest
 
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,13 +15,13 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
 
-class ModuleFragment : Fragment() {
+class SalleFragment : Fragment(){
 
     private lateinit var spinnerFilieres: Spinner
-    private lateinit var nomModuleEditText: EditText
-    private lateinit var btnValiderModule: Button
+    private lateinit var nomSalleEditText: EditText
+    private lateinit var btnValiderSalle: Button
 
-    private val TAG = "ModuleFragment"
+    private val TAG = "SalleFragment"
 
     private val filiereList = mutableListOf<String>()      // Pour afficher dans le spinner
     private val filiereIdList = mutableListOf<Int>()        // Pour stocker les id des filières
@@ -29,16 +30,16 @@ class ModuleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_module, container, false)
+        val view = inflater.inflate(R.layout.fragment_salle, container, false)
 
         spinnerFilieres = view.findViewById(R.id.spinnerFilieres)
-        nomModuleEditText = view.findViewById(R.id.nomModule)  // Modifier ton EditText pour lui ajouter un id : nomModuleEditText
-        btnValiderModule = view.findViewById(R.id.btnModule)    // Modifier ton Button pour lui ajouter un id : btnValiderModule
+        nomSalleEditText = view.findViewById(R.id.nomSalle)  // Modifier ton EditText pour lui ajouter un id : nomSalleEditText
+        btnValiderSalle = view.findViewById(R.id.btnSalle)    // Modifier ton Button pour lui ajouter un id : btnValiderSalle
 
         fetchFilieres()
 
-        btnValiderModule.setOnClickListener {
-            enregistrerModule()
+        btnValiderSalle.setOnClickListener {
+            enregistrerSalle()
         }
 
         return view
@@ -87,21 +88,21 @@ class ModuleFragment : Fragment() {
         spinnerFilieres.adapter = adapter
     }
 
-    private fun enregistrerModule() {
-        val nomModule = nomModuleEditText.text.toString().trim()
+    private fun enregistrerSalle() {
+        val nomSalle = nomSalleEditText.text.toString().trim()
         val position = spinnerFilieres.selectedItemPosition
 
-        if (nomModule.isEmpty() || position == Spinner.INVALID_POSITION) {
-            Toast.makeText(requireContext(), "Veuillez entrer un nom de module et choisir une filière", Toast.LENGTH_LONG).show()
+        if (nomSalle.isEmpty() || position == Spinner.INVALID_POSITION) {
+            Toast.makeText(requireContext(), "Veuillez entrer un nom de Salle et choisir une filière", Toast.LENGTH_LONG).show()
             return
         }
 
         val filiereId = filiereIdList[position]
 
-        val url = "http://100.89.160.199:5000/modules"
+        val url = "http://100.89.160.199:5000/salles"
 
         val jsonBody = JSONObject()
-        jsonBody.put("nom", nomModule)
+        jsonBody.put("nom", nomSalle)
         jsonBody.put("filiere_id", filiereId)
 
         Log.d(TAG, "Envoi de la requête POST à $url avec données: $jsonBody")
@@ -109,17 +110,17 @@ class ModuleFragment : Fragment() {
         val request = JsonObjectRequest(
             Request.Method.POST, url, jsonBody,
             { response ->
-                val message = response.optString("message", "Module ajouté avec succès")
+                val message = response.optString("message", "Salle ajouté avec succès")
                 Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                Log.d(TAG, "Module ajouté avec succès: $response")
+                Log.d(TAG, "Salle ajouté avec succès: $response")
                 // Nettoyer les champs
-                nomModuleEditText.text.clear()
+                nomSalleEditText.text.clear()
                 spinnerFilieres.setSelection(0)
             },
             { error ->
                 val statusCode = error.networkResponse?.statusCode
                 Log.e(TAG, "Erreur Volley - Code: $statusCode, Message: ${error.message}")
-                Toast.makeText(requireContext(), "Erreur lors de l'ajout du module", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Erreur lors de l'ajout du Salle", Toast.LENGTH_LONG).show()
             }
         )
 
