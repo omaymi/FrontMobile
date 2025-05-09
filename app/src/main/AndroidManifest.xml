@@ -37,6 +37,9 @@
         <activity
             android:name=".CameraActivity"
             android:exported="true"></activity>
+
+        <activity android:name=".ListSeanceScanActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.absencestest.fileprovider"

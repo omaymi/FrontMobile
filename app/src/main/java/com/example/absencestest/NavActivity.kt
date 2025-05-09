@@ -77,8 +77,11 @@ class NavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             R.id.nav_share -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, ProfesseurFragment())
                 .commit()
-            R.id.nav_about -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, FacialFragement())
+            R.id.nav_seance -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SeanceFragment())
+                .commit()
+            R.id.nav_salle -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SalleFragment())
                 .commit()
         }
         drawerLayout.closeDrawer(GravityCompat.START)

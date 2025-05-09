@@ -20,16 +20,11 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.*
-import okhttp3.WebSocketListener
 import okio.ByteString
-import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-
 
 class CameraActivity : AppCompatActivity() {
     private var cameraOpenRetries = 0
@@ -37,7 +32,7 @@ class CameraActivity : AppCompatActivity() {
     private val cameraPermissionRequestCode = 123
     private var isScanning = false
     private var lastImageSentTime = 0L
-    private val minIntervalBetweenImages = 150L
+    private val minIntervalBetweenImages = 500L
     private var lastToastTime = 0L
 
     private lateinit var scanButton: FloatingActionButton
@@ -47,11 +42,6 @@ class CameraActivity : AppCompatActivity() {
     private var cameraProvider: ProcessCameraProvider? = null
     private val handler = Handler(Looper.getMainLooper())
 
-    private var lastImageWidth: Int = 0
-    private var lastImageHeight: Int = 0
-
-    // Référence à la vue d'overlay
-    private lateinit var faceOverlay: FaceOverlayView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
@@ -70,8 +60,6 @@ class CameraActivity : AppCompatActivity() {
         } else {
             initializeComponents()
         }
-        faceOverlay = findViewById(R.id.faceOverlay)
-
     }
 
     private fun initializeComponents() {
@@ -103,7 +91,7 @@ class CameraActivity : AppCompatActivity() {
 
     private fun initWebSocket() {
         val client = OkHttpClient()
-        val request = Request.Builder().url("ws://192.168.0.103:8765").build()
+        val request = Request.Builder().url("ws://192.168.134.106:8765").build()
         try {
             webSocket = client.newWebSocket(request, object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
@@ -111,49 +99,25 @@ class CameraActivity : AppCompatActivity() {
                     runOnUiThread { Toast.makeText(this@CameraActivity, "Connecté au backend", Toast.LENGTH_SHORT).show() }
                 }
 
-                // Remplacer la partie onMessage existante par :
                 override fun onMessage(webSocket: WebSocket, text: String) {
+                    Log.d("CameraActivity", "Message reçu du backend : $text")
                     try {
-                        val jsonResponse = JSONObject(text) // Parse en JSONObject au lieu de JSONArray
-                        val detectionsArray = jsonResponse.getJSONArray("detections")
-                        val imageSize = jsonResponse.getJSONObject("image_size")
+                        val ids = text.trim('[', ']').split(",").map { it.trim().trim('"') }.filter { it.isNotEmpty() }
+                        Log.d("CameraActivity", "IDs détectés : $ids")
 
-                        val rawDetections = mutableListOf<FaceOverlayView.FaceDetection>()
-                        for (i in 0 until detectionsArray.length()) {
-                            val obj = detectionsArray.getJSONObject(i)
-                            rawDetections.add(
-                                FaceOverlayView.FaceDetection(
-                                    obj.getString("id"),
-                                    obj.getDouble("left").toFloat(),
-                                    obj.getDouble("top").toFloat(),
-                                    obj.getDouble("right").toFloat(),
-                                    obj.getDouble("bottom").toFloat()
-                                )
-                            )
-                        }
-
-                        runOnUiThread {
-                            // Récupérer les dimensions de l'image originale
-                            val originalWidth = imageSize.getInt("width").toFloat()
-                            val originalHeight = imageSize.getInt("height").toFloat()
-
-                            // Calculer le ratio de mise à l'échelle
-                            val scaleX = previewView.width / originalWidth
-                            val scaleY = previewView.height / originalHeight
-
-                            val scaledDetections = rawDetections.map { detection ->
-                                FaceOverlayView.FaceDetection(
-                                    detection.id,
-                                    detection.left * scaleX,
-                                    detection.top * scaleY,
-                                    detection.right * scaleX,
-                                    detection.bottom * scaleY
-                                )
+                        // Limiter les Toasts
+                        val currentTime = System.currentTimeMillis()
+                        val minIntervalBetweenToasts = 2000L
+                        if (currentTime - lastToastTime >= minIntervalBetweenToasts) {
+                            if (ids.isNotEmpty()) {
+                                runOnUiThread { Toast.makeText(this@CameraActivity, "Présences détectées : $ids", Toast.LENGTH_SHORT).show() }
+                            } else {
+                                runOnUiThread { Toast.makeText(this@CameraActivity, "Aucun visage détecté", Toast.LENGTH_SHORT).show() }
                             }
-                            faceOverlay.updateDetections(scaledDetections)
+                            lastToastTime = currentTime
                         }
                     } catch (e: Exception) {
-                        Log.e("CameraActivity", "Erreur de traitement: ${e.message}")
+                        Log.e("CameraActivity", "Erreur lors du traitement du message : ${e.message}")
                     }
                 }
 
@@ -208,8 +172,6 @@ class CameraActivity : AppCompatActivity() {
                     it.setAnalyzer(cameraExecutor) { imageProxy ->
                         try {
                             if (isScanning) {
-                                lastImageWidth = imageProxy.width
-                                lastImageHeight = imageProxy.height
                                 val currentTime = System.currentTimeMillis()
                                 if (currentTime - lastImageSentTime >= minIntervalBetweenImages) {
                                     val jpegBytes = convertToJpeg(imageProxy)
