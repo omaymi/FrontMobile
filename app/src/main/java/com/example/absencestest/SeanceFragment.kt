@@ -57,7 +57,7 @@ class SeanceFragment : Fragment() {
         btnListSeance = view.findViewById(R.id.btnListSeances)
         // Récupération des filières
         fun fetchFilieres() {
-            val url = "http://100.89.160.199:5000/filieres"
+            val url = "http://192.168.228.90:5000/filieres"
             val request = JsonArrayRequest(Request.Method.GET, url, null,
                 { response ->
                     filiereList.clear()
@@ -75,7 +75,7 @@ class SeanceFragment : Fragment() {
         }
 
         fun fetchModulesByFiliere(filiereId: Int) {
-            val url = "http://100.89.160.199:5000/modules/filiere/$filiereId"
+            val url = "http://192.168.228.90:5000/modules/filiere/$filiereId"
             val request = JsonArrayRequest(Request.Method.GET, url, null,
                 { response ->
                     moduleList.clear()
@@ -93,7 +93,7 @@ class SeanceFragment : Fragment() {
         }
 
         fun fetchProfesseurs(filiereId: Int, moduleId: Int) {
-            val url = "http://100.89.160.199:5000/professeurs?filiere_id=$filiereId&module_id=$moduleId"
+            val url = "http://192.168.228.90:5000/professeurs?filiere_id=$filiereId&module_id=$moduleId"
             val request = JsonArrayRequest(Request.Method.GET, url, null,
                 { response ->
                     professeurList.clear()
@@ -147,7 +147,7 @@ class SeanceFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val url = "http://100.89.160.199:5000/salles/disponibles?filiere_id=$filiereId&date=$date&heure_debut=$debut&heure_fin=$fin"
+            val url = "http://192.168.228.90:5000/salles/disponibles?filiere_id=$filiereId&date=$date&heure_debut=$debut&heure_fin=$fin"
             val request = JsonArrayRequest(Request.Method.GET, url, null,
                 { response ->
                     salleList.clear()
@@ -196,7 +196,7 @@ class SeanceFragment : Fragment() {
                 put("heure_fin", fin)
             }
 
-            val url = "http://100.89.160.199:5000/seance"
+            val url = "http://192.168.228.90:5000/seance"
             val request = JsonObjectRequest(Request.Method.POST, url, jsonBody,
                 { response ->
                     Toast.makeText(requireContext(), "Séance ajoutée avec succès", Toast.LENGTH_SHORT).show()

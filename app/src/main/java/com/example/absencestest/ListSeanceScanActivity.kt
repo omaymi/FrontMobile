@@ -56,7 +56,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
     }
 
     private fun fetchSeances() {
-        val url = "http://100.89.160.199:5000/seance"
+        val url = "http://192.168.228.90:5000/seance"
 
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,

@@ -50,6 +50,32 @@
         android:hint="Email du professeur"
         android:inputType="textEmailAddress"
         android:layout_marginBottom="16dp"/>
+    <!-- Ajouter l'ImageView pour le toggle -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/editMotPassProfesseur"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Mot de passe du professeur"
+            android:inputType="textPassword"
+            android:paddingEnd="48dp"
+            android:focusable="false"
+            android:clickable="true"/>
+
+        <ImageView
+            android:id="@+id/ivTogglePassword"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_visibility_off"/>
+
+    </RelativeLayout>
 
     <!-- Bouton de validation -->
     <Button

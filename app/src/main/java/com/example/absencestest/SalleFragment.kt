@@ -46,7 +46,7 @@ class SalleFragment : Fragment(){
     }
 
     private fun fetchFilieres() {
-        val url = "http://100.89.160.199:5000/filieres"
+        val url = "http://192.168.228.90:5000/filieres"
 
         Log.d(TAG, "Envoi de la requête GET à $url")
 
@@ -99,7 +99,7 @@ class SalleFragment : Fragment(){
 
         val filiereId = filiereIdList[position]
 
-        val url = "http://100.89.160.199:5000/salles"
+        val url = "http://192.168.228.90:5000/salles"
 
         val jsonBody = JSONObject()
         jsonBody.put("nom", nomSalle)
