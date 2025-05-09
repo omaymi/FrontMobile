@@ -44,7 +44,7 @@ class FiliereFragment : Fragment() {
     }
 
     private fun sendFiliereRequest(nom: String) {
-        val url = "http://192.168.228.90:5000/filieres"
+        val url = "http://192.168.43.167:5000/filieres"
 
         val jsonBody = JSONObject()
         jsonBody.put("nom", nom)

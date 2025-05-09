@@ -26,7 +26,7 @@ class ProfesseurFragment : Fragment() {
     private lateinit var ivTogglePassword: ImageView
 
     private val TAG = "ProfesseurFragment"
-    private val BASE_URL = "http://192.168.228.90:5000"
+    private val BASE_URL = "http://192.168.43.167:5000"
     private var isPasswordVisible = false
 
     private val filiereList = mutableListOf<String>()
@@ -97,7 +97,7 @@ class ProfesseurFragment : Fragment() {
     }
 
     private fun fetchFilieres() {
-        val url = "http://192.168.228.90:5000/filieres"
+        val url = "http://192.168.43.167:5000/filieres"
         
 
         Log.d(TAG, "Envoi de la requête GET à $url")
@@ -119,7 +119,7 @@ class ProfesseurFragment : Fragment() {
     }
 
     private fun fetchModulesByFiliere(filiereId: Int) {
-        val url = "http://192.168.228.90:5000/modules/filiere/$filiereId"  // Mise à jour de l'URL pour correspondre à la route Flask
+        val url = "http://192.168.43.167:5000/modules/filiere/$filiereId"  // Mise à jour de l'URL pour correspondre à la route Flask
 
         Log.d(TAG, "Envoi de la requête GET à $url")
 
@@ -199,7 +199,7 @@ class ProfesseurFragment : Fragment() {
         val filiereId = filiereIdList[positionFiliere]
         val moduleId = moduleIdList[positionModule]
 
-        val url = "http://192.168.228.90:5000/professeurs"  // Modifiez cette URL si nécessaire
+        val url = "http://192.168.43.167:5000/professeurs"  // Modifiez cette URL si nécessaire
 
         val jsonBody = JSONObject()
         jsonBody.put("nom", nomProfesseur)
