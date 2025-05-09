@@ -1,5 +1,6 @@
 package com.example.absencestest
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
@@ -37,7 +38,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
                 return SeanceViewHolder(itemView)
             }
 
-            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
                 val seance = seancesList[position]
                 val holderView = holder as SeanceViewHolder
 
@@ -50,7 +51,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
 
                 holderView.iconDelete.setOnClickListener {
                     val seanceId = seance.getInt("id") // Assure-toi que chaque séance a un champ "id"
-                    val deleteUrl = "http://192.168.134.106:5000/seance/$seanceId"
+                    val deleteUrl = "http://192.168.0.103:5000/seance/$seanceId"
 
                     val requestQueue = Volley.newRequestQueue(this@ListSeanceScanActivity)
 
@@ -82,7 +83,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
     }
 
     private fun fetchSeances() {
-        val url = "http://192.168.134.106:5000/seance"
+        val url = "http://192.168.0.103:5000/seance"
 
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,

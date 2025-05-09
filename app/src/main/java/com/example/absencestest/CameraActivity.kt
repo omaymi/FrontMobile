@@ -91,7 +91,7 @@ class CameraActivity : AppCompatActivity() {
 
     private fun initWebSocket() {
         val client = OkHttpClient()
-        val request = Request.Builder().url("ws://192.168.134.106:8765").build()
+        val request = Request.Builder().url("ws://192.168.0.103:8765").build()
         try {
             webSocket = client.newWebSocket(request, object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
