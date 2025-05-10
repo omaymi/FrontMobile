@@ -43,9 +43,6 @@
 
         <activity android:name=".ListSeanceScanActivity" />
 
-        <activity
-            android:name=".NavActivityProfe"
-            android:exported="false" />
 
 
         <provider

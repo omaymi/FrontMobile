@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
@@ -26,6 +27,7 @@ class SeanceFragment : Fragment() {
     private lateinit var spinnerSalles: Spinner
     private lateinit var btnCheckSalles: Button
     private lateinit var btnListSeance: Button
+    private lateinit var requestQueue: RequestQueue
 
     private val filiereList = mutableListOf<String>()
     private val filiereIdList = mutableListOf<Int>()
@@ -43,7 +45,7 @@ class SeanceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_seance, container, false)
-
+        requestQueue = Volley.newRequestQueue(requireContext())
         // Initialisation des vues
         btnSeance = view.findViewById(R.id.btnValiderSeance)
         dateEditText = view.findViewById(R.id.editDateSeance)
@@ -57,7 +59,7 @@ class SeanceFragment : Fragment() {
         btnListSeance = view.findViewById(R.id.btnListSeances)
         // Récupération des filières
         fun fetchFilieres() {
-            val url = "http://192.168.134.106:5000/filieres"
+            val url = "http://192.168.0.106:5000/filieres"
             val request = JsonArrayRequest(Request.Method.GET, url, null,
                 { response ->
                     filiereList.clear()
@@ -71,11 +73,11 @@ class SeanceFragment : Fragment() {
                 },
                 { error -> Log.e(TAG, "Erreur filières: ${error.message}") }
             )
-            Volley.newRequestQueue(requireContext()).add(request)
+            requestQueue.add(request)
         }
 
         fun fetchModulesByFiliere(filiereId: Int) {
-            val url = "http://192.168.134.106:5000/modules/filiere/$filiereId"
+            val url = "http://192.168.0.106:5000/modules/filiere/$filiereId"
             val request = JsonArrayRequest(Request.Method.GET, url, null,
                 { response ->
                     moduleList.clear()
@@ -89,11 +91,11 @@ class SeanceFragment : Fragment() {
                 },
                 { error -> Log.e(TAG, "Erreur modules: ${error.message}") }
             )
-            Volley.newRequestQueue(requireContext()).add(request)
+            requestQueue.add(request)
         }
 
         fun fetchProfesseurs(filiereId: Int, moduleId: Int) {
-            val url = "http://192.168.134.106:5000/professeurs?filiere_id=$filiereId&module_id=$moduleId"
+            val url = "http://192.168.0.106:5000/professeurs?filiere_id=$filiereId&module_id=$moduleId"
             val request = JsonArrayRequest(Request.Method.GET, url, null,
                 { response ->
                     professeurList.clear()
@@ -107,7 +109,7 @@ class SeanceFragment : Fragment() {
                 },
                 { error -> Log.e(TAG, "Erreur professeurs: ${error.message}") }
             )
-            Volley.newRequestQueue(requireContext()).add(request)
+            requestQueue.add(request)
         }
 
         // Sélections
@@ -147,7 +149,7 @@ class SeanceFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val url = "http://192.168.134.106:5000/salles/disponibles?filiere_id=$filiereId&date=$date&heure_debut=$debut&heure_fin=$fin"
+            val url = "http://192.168.0.106:5000/salles/disponibles?filiere_id=$filiereId&date=$date&heure_debut=$debut&heure_fin=$fin"
             val request = JsonArrayRequest(Request.Method.GET, url, null,
                 { response ->
                     salleList.clear()
@@ -171,7 +173,7 @@ class SeanceFragment : Fragment() {
                     Toast.makeText(requireContext(), "Erreur récupération salles", Toast.LENGTH_SHORT).show()
                 }
             )
-            Volley.newRequestQueue(requireContext()).add(request)
+            requestQueue.add(request)
         }
 
         btnSeance.setOnClickListener {
@@ -196,7 +198,7 @@ class SeanceFragment : Fragment() {
                 put("heure_fin", fin)
             }
 
-            val url = "http://192.168.134.106:5000/seance"
+            val url = "http://192.168.0.106:5000/seance"
             val request = JsonObjectRequest(Request.Method.POST, url, jsonBody,
                 { response ->
                     Toast.makeText(requireContext(), "Séance ajoutée avec succès", Toast.LENGTH_SHORT).show()
@@ -207,7 +209,7 @@ class SeanceFragment : Fragment() {
                     Toast.makeText(requireContext(), "Erreur lors de l'ajout", Toast.LENGTH_SHORT).show()
                 }
             )
-            Volley.newRequestQueue(requireContext()).add(request)
+            requestQueue.add(request)
         }
 
 
@@ -218,5 +220,11 @@ class SeanceFragment : Fragment() {
 
         fetchFilieres()
         return view
+
+
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        requestQueue.stop()
     }
 }

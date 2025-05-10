@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import okhttp3.*
 import okio.ByteString
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -32,7 +33,7 @@ class CameraActivity : AppCompatActivity() {
     private val cameraPermissionRequestCode = 123
     private var isScanning = false
     private var lastImageSentTime = 0L
-    private val minIntervalBetweenImages = 500L
+    private val minIntervalBetweenImages = 300L
     private var lastToastTime = 0L
 
     private lateinit var scanButton: FloatingActionButton
@@ -41,13 +42,14 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var webSocket: WebSocket
     private var cameraProvider: ProcessCameraProvider? = null
     private val handler = Handler(Looper.getMainLooper())
-
+    private lateinit var faceOverlay: FaceOverlayView
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_camera)
+        faceOverlay = findViewById(R.id.faceOverlay)
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             Log.e("CameraActivity", "Exception non gérée : ${throwable.message}", throwable)
             runOnUiThread {
@@ -55,6 +57,14 @@ class CameraActivity : AppCompatActivity() {
             }
         }
 
+        val seanceId = intent.getIntExtra("SEANCE_ID", -1)
+        if (seanceId == -1) {
+            Log.e("CameraActivity", "ID de séance non fourni")
+            Toast.makeText(this, "Erreur : ID de séance manquant", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        Log.d("CameraActivity", "Séance ID : $seanceId")
 
 
         scanButton = findViewById(R.id.btnScan)
@@ -96,7 +106,7 @@ class CameraActivity : AppCompatActivity() {
 
     private fun initWebSocket() {
         val client = OkHttpClient()
-        val request = Request.Builder().url("ws://192.168.0.103:8765").build()
+        val request = Request.Builder().url("ws://192.168.0.106:8765").build()
         try {
             webSocket = client.newWebSocket(request, object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
@@ -105,26 +115,50 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onMessage(webSocket: WebSocket, text: String) {
-                    Log.d("CameraActivity", "Message reçu du backend : $text")
                     try {
-                        val ids = text.trim('[', ']').split(",").map { it.trim().trim('"') }.filter { it.isNotEmpty() }
-                        Log.d("CameraActivity", "IDs détectés : $ids")
+                        val jsonResponse = JSONObject(text) // Parse en JSONObject au lieu de JSONArray
+                        val detectionsArray = jsonResponse.getJSONArray("detections")
+                        val imageSize = jsonResponse.getJSONObject("image_size")
 
-                        // Limiter les Toasts
-                        val currentTime = System.currentTimeMillis()
-                        val minIntervalBetweenToasts = 2000L
-                        if (currentTime - lastToastTime >= minIntervalBetweenToasts) {
-                            if (ids.isNotEmpty()) {
-                                runOnUiThread { Toast.makeText(this@CameraActivity, "Présences détectées : $ids", Toast.LENGTH_SHORT).show() }
-                            } else {
-                                runOnUiThread { Toast.makeText(this@CameraActivity, "Aucun visage détecté", Toast.LENGTH_SHORT).show() }
+                        val rawDetections = mutableListOf<FaceOverlayView.FaceDetection>()
+                        for (i in 0 until detectionsArray.length()) {
+                            val obj = detectionsArray.getJSONObject(i)
+                            rawDetections.add(
+                                FaceOverlayView.FaceDetection(
+                                    obj.getString("id"),
+                                    obj.getDouble("left").toFloat(),
+                                    obj.getDouble("top").toFloat(),
+                                    obj.getDouble("right").toFloat(),
+                                    obj.getDouble("bottom").toFloat()
+                                )
+                            )
+                        }
+
+                        runOnUiThread {
+                            // Récupérer les dimensions de l'image originale
+                            val originalWidth = imageSize.getInt("width").toFloat()
+                            val originalHeight = imageSize.getInt("height").toFloat()
+
+                            // Calculer le ratio de mise à l'échelle
+                            val scaleX = previewView.width / originalWidth
+                            val scaleY = previewView.height / originalHeight
+
+                            val scaledDetections = rawDetections.map { detection ->
+                                FaceOverlayView.FaceDetection(
+                                    detection.id,
+                                    detection.left * scaleX,
+                                    detection.top * scaleY,
+                                    detection.right * scaleX,
+                                    detection.bottom * scaleY
+                                )
                             }
-                            lastToastTime = currentTime
+                            faceOverlay.updateDetections(scaledDetections)
                         }
                     } catch (e: Exception) {
-                        Log.e("CameraActivity", "Erreur lors du traitement du message : ${e.message}")
+                        Log.e("CameraActivity", "Erreur de traitement: ${e.message}")
                     }
                 }
+
 
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                     Log.d("CameraActivity", "WebSocket fermé : $reason")
@@ -169,7 +203,7 @@ class CameraActivity : AppCompatActivity() {
                 .also { it.setSurfaceProvider(previewView.surfaceProvider) }
 
             val analysis = ImageAnalysis.Builder()
-                .setTargetResolution(android.util.Size(1280, 720))
+                .setTargetResolution(android.util.Size(640, 480))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
                 .build()
@@ -180,22 +214,8 @@ class CameraActivity : AppCompatActivity() {
                                 val currentTime = System.currentTimeMillis()
                                 if (currentTime - lastImageSentTime >= minIntervalBetweenImages) {
                                     val jpegBytes = convertToJpeg(imageProxy)
-                                    Log.d("CameraActivity", "Envoi de l'image, taille : ${jpegBytes.size} bytes")
-
-                                    // Sauvegarder l'image localement pour inspection
-                                    try {
-                                        val file = java.io.File(getExternalFilesDir(null), "test_image.jpg")
-                                        java.io.FileOutputStream(file).use { fos ->
-                                            fos.write(jpegBytes)
-                                            fos.flush()
-                                        }
-                                        Log.d("CameraActivity", "Image sauvegardée localement : ${file.absolutePath}")
-                                    } catch (e: Exception) {
-                                        Log.e("CameraActivity", "Erreur lors de la sauvegarde locale : ${e.message}")
-                                    }
-
-                                    val success = webSocket.send(ByteString.of(*jpegBytes))
-                                    Log.d("CameraActivity", "Image envoyée : $success")
+                                    Log.d("CameraActivity", "Image convertie en JPEG, taille : ${jpegBytes.size} bytes")
+                                    sendImageToBackend(seanceId = intent.getIntExtra("SEANCE_ID", -1), jpegBytes = jpegBytes)
                                     lastImageSentTime = currentTime
                                 }
                             }
@@ -235,7 +255,7 @@ class CameraActivity : AppCompatActivity() {
 
         // Convertir le Bitmap en JPEG
         val outputStream = ByteArrayOutputStream()
-        finalBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 75, outputStream)
+        finalBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 50, outputStream)
         val jpegBytes = outputStream.toByteArray()
 
         // Nettoyer les ressources
@@ -310,5 +330,22 @@ class CameraActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (checkCameraPermission() && ::cameraExecutor.isInitialized) setupCamera()
+    }
+    private fun sendImageToBackend(seanceId: Int, jpegBytes: ByteArray) {
+        if (seanceId == -1) {
+            Log.e("CameraActivity", "ID de séance non valide")
+            Toast.makeText(this, "Erreur : ID de séance manquant", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Étape 1 : Envoyer le message JSON avec seance_id
+        val json = JSONObject().apply {
+            put("seance_id", seanceId)
+        }
+        webSocket.send(json.toString())
+
+        // Étape 2 : Envoyer les bytes bruts de l'image
+        val success = webSocket.send(ByteString.of(*jpegBytes))
+        Log.d("CameraActivity", "JSON et image envoyés : $success")
     }
 }

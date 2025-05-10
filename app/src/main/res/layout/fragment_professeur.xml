@@ -11,7 +11,7 @@
         android:id="@+id/titrePageProf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/ajouter_un_professeur"
+        android:text="👨‍🏫 Ajouter un professeur"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/brown_dark"
@@ -38,7 +38,7 @@
         android:id="@+id/editNomProfesseur"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/nom_du_professeur"
+        android:hint="Nom du professeur"
         android:inputType="textPersonName"
         android:layout_marginBottom="12dp"/>
 
@@ -47,7 +47,7 @@
         android:id="@+id/editEmailProfesseur"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/email_du_professeur"
+        android:hint="Email du professeur"
         android:inputType="textEmailAddress"
         android:layout_marginBottom="16dp"/>
     <!-- Ajouter l'ImageView pour le toggle -->
@@ -82,7 +82,7 @@
         android:id="@+id/btnValiderProfesseur"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/valider"
+        android:text="Valider"
         android:textColor="#FFFFFF"
         android:backgroundTint="@color/cuivre"
         android:layout_marginBottom="24dp"/>
