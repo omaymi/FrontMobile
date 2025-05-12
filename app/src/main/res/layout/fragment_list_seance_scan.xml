@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:text="Prof"
+                    android:text="Proffesseur"
                     android:textStyle="bold"
                     android:gravity="center" />
 
@@ -51,7 +51,7 @@
                     android:gravity="center" />
 
                 <TextView
-                    android:layout_width="120dp"
+                    android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:text="Salle"
                     android:textStyle="bold"
@@ -80,16 +80,23 @@
 
                 <!-- Aligner Scan et Suppr avec le reste des colonnes -->
                 <TextView
-                    android:layout_width="32dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="Scan"
                     android:textStyle="bold"
                     android:gravity="center" />
 
                 <TextView
-                    android:layout_width="50dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:text="Suppr"
+                    android:text="Etudiants 'P'"
+                    android:textStyle="bold"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:text="Supprimmer"
                     android:textStyle="bold"
                     android:gravity="center" />
 
