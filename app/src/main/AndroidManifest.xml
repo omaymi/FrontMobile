@@ -44,6 +44,8 @@
             android:name=".NavActivityProfe"
             android:exported="false" />
 
+        <activity android:name=".SeanceActivity" />
+
 
         <provider
             android:name="androidx.core.content.FileProvider"
