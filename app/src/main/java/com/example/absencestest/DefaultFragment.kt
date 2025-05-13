@@ -1,5 +1,7 @@
 package com.example.absencestest
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -21,6 +23,7 @@ class DefaultFragment : Fragment() {
     private lateinit var recyclerViewAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
     private val seancesList = mutableListOf<JSONObject>()
     private var profId: Int = -1
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +57,7 @@ class DefaultFragment : Fragment() {
 
                 holderView.iconDelete.setOnClickListener {
                     val seanceId = seance.getInt("id")
-                    val deleteUrl = "http://192.168.134.106:5000/seance/$seanceId"
+                    val deleteUrl = "http://192.168.43.18:5000/seance/$seanceId"
 
                     val requestQueue = Volley.newRequestQueue(requireContext())
 
@@ -74,6 +77,16 @@ class DefaultFragment : Fragment() {
 
                     requestQueue.add(deleteRequest)
                 }
+                holderView.iconScan.setOnClickListener {
+                    val seanceId = seance.getInt("id")
+                    val intent = Intent(requireContext(), CameraActivity::class.java)
+                    intent.putExtra("SEANCE_ID", seanceId) // Passage de l'ID de la séance
+                    startActivity(intent)
+                }
+                holderView.etudiantsP.setOnClickListener {
+                    val seanceId = seance.getInt("id")
+                    fetchEtudiantsPresents(seanceId)
+                }
             }
 
             override fun getItemCount(): Int = seancesList.size
@@ -86,9 +99,35 @@ class DefaultFragment : Fragment() {
 
         return view
     }
+    private fun fetchEtudiantsPresents(seanceId: Int) {
+        val url = "http://192.168.43.18:5000/seance/$seanceId/etudiants_presents"
+        val request = JsonArrayRequest(Request.Method.GET, url, null,
+            { response ->
+                val etudiants = mutableListOf<String>()
+                for (i in 0 until response.length()) {
+                    etudiants.add(response.getString(i))
+                }
+                showEtudiantsDialog(etudiants)
+            },
+            { error ->
+                Log.e("ListSeanceScanActivity", "Erreur : ${error.message}")
+                Toast.makeText(requireContext(), "Erreur lors de la récupération des présences", Toast.LENGTH_SHORT).show()
+
+            }
+        )
+        Volley.newRequestQueue(requireContext()).add(request)
+    }
+
+    private fun showEtudiantsDialog(etudiants: List<String>) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Étudiants Présents")
+        builder.setItems(etudiants.toTypedArray(), null)
+        builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+        builder.show()
+    }
 
     private fun fetchSeances() {
-        val url = "http://192.168.134.106:5000/seance/professeur/$profId"
+        val url = "http://192.168.43.18:5000/seance/professeur/$profId"
         Log.d("URL_DEBUG", url)
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -116,5 +155,7 @@ class DefaultFragment : Fragment() {
         val heureDebut = itemView.findViewById<TextView>(R.id.heureDebut)
         val heureFin = itemView.findViewById<TextView>(R.id.heureFin)
         val iconDelete = itemView.findViewById<ImageView>(R.id.iconDelete)
+        val iconScan = itemView.findViewById<ImageView>(R.id.iconScan)
+        val etudiantsP = itemView.findViewById<TextView>(R.id.etudiantsP)
     }
 }

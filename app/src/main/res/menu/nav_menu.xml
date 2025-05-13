@@ -6,7 +6,10 @@
 
     <group
         android:checkableBehavior="single">
-
+        <item
+            android:id="@+id/nav_dash"
+            android:icon="@drawable/nav_home"
+            android:title="Dashboard"/>
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/nav_filiere"
@@ -23,13 +26,14 @@
             android:title="Professeur"/>
 
         <item
-            android:id="@+id/nav_seance"
-            android:icon="@drawable/nav_seance"
-            android:title="Seance"/>
-        <item
             android:id="@+id/nav_salle"
             android:icon="@drawable/nav_salle"
             android:title="Salle"/>
+
+        <item
+            android:id="@+id/nav_seance"
+            android:icon="@drawable/nav_seance"
+            android:title="Seance"/>
     </group>
     <item
         android:title="">

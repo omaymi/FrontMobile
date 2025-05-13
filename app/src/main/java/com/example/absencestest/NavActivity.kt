@@ -56,6 +56,12 @@ class NavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
             override fun onDrawerStateChanged(newState: Int) {}
         })
+        // Charger HomeFragment par défaut
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, HomeFragment())
+                .commit()
+        }
     }
 
     private fun toggleNavigationDrawer() {
@@ -68,6 +74,9 @@ class NavActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_dash -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, HomeFragment())
+                .commit()
             R.id.nav_home -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, FiliereFragment())
                 .commit()

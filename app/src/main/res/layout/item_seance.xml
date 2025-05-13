@@ -58,9 +58,9 @@
             android:text="Fin" />
         <ImageView
             android:id="@+id/iconScan"
-            android:layout_width="40dp"
-            android:layout_height="32dp"
-            android:layout_margin="4dp"
+            android:layout_width="99dp"
+            android:layout_height="18dp"
+            android:layout_margin="8dp"
             android:src="@drawable/ic_scan"
             android:contentDescription="Scanner"
             android:layout_gravity="center"
@@ -77,9 +77,9 @@
         <!-- Icône Supprimer (petite taille) -->
         <ImageView
             android:id="@+id/iconDelete"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:layout_margin="4dp"
+            android:layout_width="99dp"
+            android:layout_height="18dp"
+            android:layout_margin="8dp"
             android:src="@drawable/ic_delete"
             android:contentDescription="Supprimer"
             android:layout_gravity="center"

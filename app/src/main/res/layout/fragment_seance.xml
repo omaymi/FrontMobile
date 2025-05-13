@@ -48,8 +48,10 @@
         android:id="@+id/editDateSeance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Date (JJ:MM:AAAA)"
-        android:layout_marginBottom="8dp" />
+        android:hint="Date (AAAA-MM-JJ)"
+        android:focusable="false"
+        android:clickable="true"
+        android:inputType="none"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,9 +64,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-
             android:layout_weight="1"
-            android:hint="Heure début (HH:MM:SS)" />
+            android:hint="Heure début (HH:MM:SS)"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"/>
 
         <EditText
             android:id="@+id/editHeureFin"
@@ -72,7 +76,10 @@
             android:layout_marginStart="8dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Heure fin (HH:MM:SS)" />
+            android:hint="Heure fin (HH:MM:SS)"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"/>
     </LinearLayout>
 
     <LinearLayout
@@ -86,8 +93,9 @@
             android:id="@+id/btnCheckSalles"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/cuivre"
             android:layout_weight="1"
-            android:text="Vérifier dispo des salles" />
+            android:text="dispo des salles" />
 
         <Spinner
             android:id="@+id/spinnerSalle"
@@ -103,7 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
-        android:backgroundTint="@color/cuivre"
+        android:backgroundTint="@color/brown_dark"
         android:text="Créer la séance"
         android:layout_marginBottom="24dp" />
 
@@ -112,6 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="📋 Liste des séances"
+        android:backgroundTint="@color/cuivre"
         android:textStyle="bold"
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />

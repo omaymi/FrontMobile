@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="176dp"
+    android:layout_height="160dp"
     android:background="@drawable/head3"
-    android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -13,20 +11,5 @@
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
         android:contentDescription="Logo"
-        android:src="@drawable/logo_transpa"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome to Smart Presence"
-        android:textColor="@color/white"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="19dp"
-        android:text="contact@uca.ac.ma"
-        android:textColor="@color/white"
-        android:textSize="14sp"/>
+        android:src="@drawable/logo_transpa" />
 </LinearLayout>

@@ -64,5 +64,6 @@ dependencies {
     implementation(libs.core)
 
     implementation(libs.okhttp)
+    implementation(libs.mpandroidchart)
 
 }

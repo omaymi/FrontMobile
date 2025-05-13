@@ -54,7 +54,7 @@ class SeanceActivity : AppCompatActivity() {
     }
 
     private fun loadFilieres() {
-        val urlFilieres = "http://192.168.134.106:5000/professeurs/$professeurId/filieres"
+        val urlFilieres = "http://192.168.43.18:5000/professeurs/$professeurId/filieres"
         val requestQueue = Volley.newRequestQueue(this)
 
         val requestFilieres = JsonArrayRequest(Request.Method.GET, urlFilieres, null,
@@ -92,7 +92,7 @@ class SeanceActivity : AppCompatActivity() {
     }
 
     private fun loadModulesForFiliere(filiereId: Int) {
-        val urlModules = "http://192.168.134.106:5000/professeurs/$professeurId/filieres/$filiereId/modules"
+        val urlModules = "http://192.168.43.18:5000/professeurs/$professeurId/filieres/$filiereId/modules"
         val requestQueue = Volley.newRequestQueue(this)
 
         val requestModules = JsonArrayRequest(Request.Method.GET, urlModules, null,
@@ -128,7 +128,7 @@ class SeanceActivity : AppCompatActivity() {
             return
         }
 
-        val url = "http://192.168.134.106:5000/salles/disponibles?date=$date&heure_debut=$heureDebut&heure_fin=$heureFin&filiere_id=$selectedFiliereId"
+        val url = "http://192.168.43.18:5000/salles/disponibles?date=$date&heure_debut=$heureDebut&heure_fin=$heureFin&filiere_id=$selectedFiliereId"
         Log.d("URL_DEBUG", url)
 
         val requestQueue = Volley.newRequestQueue(this)
@@ -176,7 +176,7 @@ class SeanceActivity : AppCompatActivity() {
             put("heure_fin", heureFin)
         }
 
-        val url = "http://192.168.134.106:5000/seance"
+        val url = "http://192.168.43.18:5000/seance"
         val requestQueue = Volley.newRequestQueue(this)
 
         val request = JsonObjectRequest(Request.Method.POST, url, jsonBody,

@@ -43,7 +43,7 @@
         android:id="@+id/editDateSeance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Date (JJ:MM:AAAA)"
+        android:hint="Date (AAAA-MM-JJ)"
         android:layout_marginBottom="8dp" />
 
     <LinearLayout
@@ -81,8 +81,9 @@
             android:id="@+id/btnCheckSalles"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/cuivre"
             android:layout_weight="1"
-            android:text="Vérifier dispo des salles" />
+            android:text="dispo des salles" />
 
         <Spinner
             android:id="@+id/spinnerSalle"

@@ -1,5 +1,6 @@
 package com.example.absencestest
 
+import android.content.Context
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -14,6 +15,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.random.Random
 
 class ProfesseurFragment : Fragment() {
 
@@ -23,29 +25,38 @@ class ProfesseurFragment : Fragment() {
     private lateinit var editEmailProfesseur: EditText
     private lateinit var editMotPassProfesseur: EditText
     private lateinit var btnValiderProfesseur: Button
+    private lateinit var listViewProfesseurs: ListView
     private lateinit var ivTogglePassword: ImageView
+    private var isPasswordVisible = false
 
     private val TAG = "ProfesseurFragment"
-    private val BASE_URL = "http://192.168.0.106:5000"
-    private var isPasswordVisible = false
+    private val BASE_URL = "http://192.168.43.18:5000"
 
     private val filiereList = mutableListOf<String>()
     private val filiereIdList = mutableListOf<Int>()
     private val moduleList = mutableListOf<String>()
     private val moduleIdList = mutableListOf<Int>()
+    private lateinit var professeurAdapter: ProfesseurAdapter
+    private val professeurList = mutableListOf<Professeur>()
+
+    data class Professeur(val id: Int, val nom: String, val filiereId: Int, val moduleId: Int)
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_professeur, container, false)
-        setupViews(view)
+
+        initViews(view)
+        setupAdapters()
         setupListeners()
         fetchFilieres()
+
         return view
     }
 
-    private fun setupViews(view: View) {
+    private fun initViews(view: View) {
         spinnerFilieres = view.findViewById(R.id.spinnerFilieres)
         spinnerModules = view.findViewById(R.id.spinnerModules)
         editNomProfesseur = view.findViewById(R.id.editNomProfesseur)
@@ -53,6 +64,8 @@ class ProfesseurFragment : Fragment() {
         editMotPassProfesseur = view.findViewById(R.id.editMotPassProfesseur)
         btnValiderProfesseur = view.findViewById(R.id.btnValiderProfesseur)
         ivTogglePassword = view.findViewById(R.id.ivTogglePassword)
+        editMotPassProfesseur = view.findViewById(R.id.editMotPassProfesseur)
+        listViewProfesseurs = view.findViewById(R.id.listeProfesseurs)
 
         editMotPassProfesseur.apply {
             showSoftInputOnFocus = false
@@ -64,19 +77,44 @@ class ProfesseurFragment : Fragment() {
         }
     }
 
+
+
+    private fun setupAdapters() {
+        professeurAdapter = ProfesseurAdapter(requireContext(), professeurList)
+        listViewProfesseurs.adapter = professeurAdapter
+
+        val filiereAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            filiereList
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        spinnerFilieres.adapter = filiereAdapter
+
+        val moduleAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            moduleList
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        spinnerModules.adapter = moduleAdapter
+    }
+
     private fun setupListeners() {
+        btnValiderProfesseur.setOnClickListener { enregistrerProfesseur() }
         ivTogglePassword.setOnClickListener { togglePasswordVisibility() }
 
         spinnerFilieres.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position != Spinner.INVALID_POSITION) {
-                    fetchModulesByFiliere(filiereIdList[position])
+                    fetchModules(filiereIdList[position])
+                    fetchProfesseurs(filiereIdList[position])
                 }
             }
-            override fun onNothingSelected(parent: AdapterView<*>) {}
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-
-        btnValiderProfesseur.setOnClickListener { enregistrerProfesseur() }
     }
 
     private fun genererMotDePasseAutomatique(): String {
@@ -95,141 +133,195 @@ class ProfesseurFragment : Fragment() {
         }
         editMotPassProfesseur.setSelection(editMotPassProfesseur.text.length)
     }
-
     private fun fetchFilieres() {
-        val url = "http://192.168.0.106:5000/filieres"
+        val url = "$BASE_URL/filieres"
 
+        Volley.newRequestQueue(requireContext()).add(
+            JsonArrayRequest(
+                Request.Method.GET, url, null,
+                { response ->
+                    filiereList.clear()
+                    filiereIdList.clear()
 
-        Log.d(TAG, "Envoi de la requête GET à $url")
+                    for (i in 0 until response.length()) {
+                        val filiere = response.getJSONObject(i)
+                        filiereList.add(filiere.getString("nom"))
+                        filiereIdList.add(filiere.getInt("id"))
+                    }
 
-        val request = JsonArrayRequest(
-            Request.Method.GET, url, null,
-            { response ->
-                Log.d(TAG, "Réponse reçue: $response")
-                handleFilieresResponse(response)
-            },
-            { error ->
-                val statusCode = error.networkResponse?.statusCode
-                Log.e(TAG, "Erreur Volley - Code: $statusCode, Message: ${error.message}")
-                Toast.makeText(requireContext(), "Erreur lors de la récupération des filières", Toast.LENGTH_LONG).show()
-            }
+                    (spinnerFilieres.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                },
+                { error ->
+                    showToast("Erreur de chargement des filières")
+                    Log.e(TAG, "Fetch filières error: ${error.message}")
+                }
+            )
         )
-
-        Volley.newRequestQueue(requireContext()).add(request)
     }
 
-    private fun fetchModulesByFiliere(filiereId: Int) {
-        val url = "http://192.168.0.106:5000/modules/filiere/$filiereId"  // Mise à jour de l'URL pour correspondre à la route Flask
+    private fun fetchModules(filiereId: Int) {
+        val url = "$BASE_URL/modules/filiere/$filiereId"
 
-        Log.d(TAG, "Envoi de la requête GET à $url")
+        Volley.newRequestQueue(requireContext()).add(
+            JsonArrayRequest(
+                Request.Method.GET, url, null,
+                { response ->
+                    moduleList.clear()
+                    moduleIdList.clear()
 
-        val request = JsonArrayRequest(
-            Request.Method.GET, url, null,
-            { response ->
-                Log.d(TAG, "Réponse reçue: $response")
-                handleModulesResponse(response)
-            },
-            { error ->
-                val statusCode = error.networkResponse?.statusCode
-                Log.e(TAG, "Erreur Volley - Code: $statusCode, Message: ${error.message}")
-                Toast.makeText(requireContext(), "Erreur lors de la récupération des modules", Toast.LENGTH_LONG).show()
-            }
+                    for (i in 0 until response.length()) {
+                        val module = response.getJSONObject(i)
+                        moduleList.add(module.getString("nom"))
+                        moduleIdList.add(module.getInt("id"))
+                    }
+
+                    (spinnerModules.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                },
+                { error ->
+                    showToast("Erreur de chargement des modules")
+                    Log.e(TAG, "Fetch modules error: ${error.message}")
+                }
+            )
         )
-
-        Volley.newRequestQueue(requireContext()).add(request)
     }
 
+    private fun fetchProfesseurs(filiereId: Int) {
+        val url = "$BASE_URL/professeurs/filiere/$filiereId"
 
-    private fun handleFilieresResponse(response: JSONArray) {
-        filiereList.clear()
-        filiereIdList.clear()
-
-        for (i in 0 until response.length()) {
-            val filiere = response.getJSONObject(i)
-            val id = filiere.getInt("id")
-            val nom = filiere.getString("nom")
-            filiereList.add(nom)
-            filiereIdList.add(id)
-        }
-
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            filiereList
+        Volley.newRequestQueue(requireContext()).add(
+            JsonArrayRequest(
+                Request.Method.GET, url, null,
+                { response ->
+                    professeurList.clear()
+                    for (i in 0 until response.length()) {
+                        val professeur = response.getJSONObject(i)
+                        professeurList.add(
+                            Professeur(
+                                professeur.getInt("id"),
+                                professeur.getString("nom"),
+                                filiereId,
+                                professeur.getInt("module_id")
+                            )
+                        )
+                    }
+                    professeurAdapter.notifyDataSetChanged()
+                },
+                { error ->
+                    showToast("Erreur de chargement des professeurs")
+                    Log.e(TAG, "Fetch professeurs error: ${error.message}")
+                }
+            )
         )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        spinnerFilieres.adapter = adapter
-    }
-
-    private fun handleModulesResponse(response: JSONArray) {
-        moduleList.clear()
-        moduleIdList.clear()
-
-        for (i in 0 until response.length()) {
-            val module = response.getJSONObject(i)
-            val id = module.getInt("id")
-            val nom = module.getString("nom")
-            moduleList.add(nom)
-            moduleIdList.add(id)
-        }
-
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            moduleList
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        spinnerModules.adapter = adapter
     }
 
     private fun enregistrerProfesseur() {
-        val nomProfesseur = editNomProfesseur.text.toString().trim()
-        val emailProfesseur = editEmailProfesseur.text.toString().trim()
-        val MotPassProfesseur = editMotPassProfesseur.text.toString().trim()
-        val positionFiliere = spinnerFilieres.selectedItemPosition
-        val positionModule = spinnerModules.selectedItemPosition
+        val nom = editNomProfesseur.text.toString().trim()
+        val email = editEmailProfesseur.text.toString().trim()
+        val motDePasse = editMotPassProfesseur.text.toString().trim()
+        val filierePosition = spinnerFilieres.selectedItemPosition
+        val modulePosition = spinnerModules.selectedItemPosition
 
-        if (nomProfesseur.isEmpty() || emailProfesseur.isEmpty() || positionFiliere == Spinner.INVALID_POSITION || positionModule == Spinner.INVALID_POSITION) {
-            Toast.makeText(requireContext(), "Veuillez entrer un nom, un email, et choisir une filière et un module", Toast.LENGTH_LONG).show()
+        if (nom.isEmpty() || email.isEmpty() || motDePasse.isEmpty() ||
+            filierePosition == Spinner.INVALID_POSITION || modulePosition == Spinner.INVALID_POSITION) {
+            showToast("Tous les champs sont requis")
             return
         }
 
-        val filiereId = filiereIdList[positionFiliere]
-        val moduleId = moduleIdList[positionModule]
+        val filiereId = filiereIdList[filierePosition]
+        val moduleId = moduleIdList[modulePosition]
+        val url = "$BASE_URL/professeurs"
+        val jsonBody = JSONObject().apply {
+            put("nom", nom)
+            put("email", email)
+            put("mot_de_passe", motDePasse)
+            put("filiere_id", filiereId)
+            put("module_id", moduleId)
+        }
 
-        val url = "http://192.168.0.106:5000/professeurs"  // Modifiez cette URL si nécessaire
+        Volley.newRequestQueue(requireContext()).add(
+            JsonObjectRequest(
+                Request.Method.POST, url, jsonBody,
+                { response ->
+                    editNomProfesseur.text.clear()
+                    editEmailProfesseur.text.clear()
+                    editMotPassProfesseur.text.clear()
+                    fetchProfesseurs(filiereId)
+                    showToast("Professeur ajouté avec succès")
+                },
+                { error ->
+                    handlePostError(error)
+                }
+            )
+        )
+    }
 
-        val jsonBody = JSONObject()
-        jsonBody.put("nom", nomProfesseur)
-        jsonBody.put("email", emailProfesseur)
-        jsonBody.put("filiere_id", filiereId)
-        jsonBody.put("module_id", moduleId)
-        jsonBody.put("mot_de_passe", MotPassProfesseur)
+    private fun deleteProfesseur(professeurId: Int, position: Int) {
+        val url = "$BASE_URL/professeurs/$professeurId"
 
-        Log.d(TAG, "Envoi de la requête POST à $url avec données: $jsonBody")
-
-        val request = JsonObjectRequest(
-            Request.Method.POST, url, jsonBody,
-            { response ->
-                val message = response.optString("message", "Professeur ajouté avec succès")
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                Log.d(TAG, "Professeur ajouté avec succès: $response")
-                // Nettoyer les champs
-                editNomProfesseur.text.clear()
-                editEmailProfesseur.text.clear()
-                editMotPassProfesseur.text.clear()
-                spinnerFilieres.setSelection(0)
-                spinnerModules.setSelection(0)
-            },
-            { error ->
-                val statusCode = error.networkResponse?.statusCode
-                Log.e(TAG, "Erreur Volley - Code: $statusCode, Message: ${error.message}")
-                Toast.makeText(requireContext(), "Erreur lors de l'ajout du professeur", Toast.LENGTH_LONG).show()
+        Volley.newRequestQueue(requireContext()).add(
+            object : JsonObjectRequest(
+                Request.Method.DELETE, url, null,
+                { _ ->
+                    professeurList.removeAt(position)
+                    professeurAdapter.notifyDataSetChanged()
+                    showToast("Professeur supprimé")
+                },
+                { error ->
+                    showToast("Échec de la suppression")
+                    Log.e(TAG, "Delete error: ${error.message}")
+                }
+            ) {
+                override fun getHeaders() = hashMapOf("Content-Type" to "application/json")
             }
         )
+    }
 
-        Volley.newRequestQueue(requireContext()).add(request)
+    private inner class ProfesseurAdapter(
+        context: Context,
+        private val items: List<Professeur>
+    ) : ArrayAdapter<Professeur>(context, R.layout.list_item_professeur, items) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val viewHolder: ViewHolder
+            val view = convertView ?: LayoutInflater.from(context).inflate(
+                R.layout.list_item_professeur,
+                parent,
+                false
+            ).also {
+                viewHolder = ViewHolder(
+                    it.findViewById(R.id.tvProfesseurName),
+                    it.findViewById(R.id.iconDelete)
+                )
+                it.tag = viewHolder
+            } ?: throw IllegalStateException("View cannot be null")
+
+            val holder = view.tag as ViewHolder
+            val professeur = getItem(position)
+
+            holder.tvName.text = professeur?.nom ?: ""
+            holder.btnDelete.setOnClickListener {
+                professeur?.let { deleteProfesseur(it.id, position) }
+            }
+
+            return view
+        }
+
+        private inner class ViewHolder(
+            val tvName: TextView,
+            val btnDelete: ImageView
+        )
+    }
+
+    private fun handlePostError(error: com.android.volley.VolleyError) {
+        val message = when (error.networkResponse?.statusCode) {
+            400 -> "Données invalides"
+            else -> "Erreur réseau: ${error.message}"
+        }
+        showToast(message)
+        Log.e(TAG, "POST Error: ${error.networkResponse?.data?.decodeToString()}")
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

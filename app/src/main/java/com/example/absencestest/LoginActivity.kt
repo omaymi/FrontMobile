@@ -18,7 +18,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var password: EditText
     private lateinit var loginButton: Button
     private val TAG = "LoginActivity"
-    private val BASE_URL = "http://192.168.0.106:5000"
+    private val BASE_URL = "http://192.168.43.18:5000"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

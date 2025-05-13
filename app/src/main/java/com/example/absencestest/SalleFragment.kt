@@ -1,6 +1,6 @@
 package com.example.absencestest
 
-
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,16 +15,22 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
 
-class SalleFragment : Fragment(){
+class SalleFragment : Fragment() {
 
     private lateinit var spinnerFilieres: Spinner
     private lateinit var nomSalleEditText: EditText
     private lateinit var btnValiderSalle: Button
+    private lateinit var listViewSalles: ListView
 
     private val TAG = "SalleFragment"
+    private val BASE_URL = "http://192.168.43.18:5000"
 
-    private val filiereList = mutableListOf<String>()      // Pour afficher dans le spinner
-    private val filiereIdList = mutableListOf<Int>()        // Pour stocker les id des filières
+    private val filiereList = mutableListOf<String>()
+    private val filiereIdList = mutableListOf<Int>()
+    private val salleList = mutableListOf<Salle>()
+    private lateinit var salleAdapter: SalleAdapter
+
+    data class Salle(val id: Int, val nom: String, val filiereId: Int)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,60 +38,100 @@ class SalleFragment : Fragment(){
     ): View? {
         val view = inflater.inflate(R.layout.fragment_salle, container, false)
 
-        spinnerFilieres = view.findViewById(R.id.spinnerFilieres)
-        nomSalleEditText = view.findViewById(R.id.nomSalle)  // Modifier ton EditText pour lui ajouter un id : nomSalleEditText
-        btnValiderSalle = view.findViewById(R.id.btnSalle)    // Modifier ton Button pour lui ajouter un id : btnValiderSalle
-
+        initViews(view)
+        setupAdapters()
+        setupListeners()
         fetchFilieres()
-
-        btnValiderSalle.setOnClickListener {
-            enregistrerSalle()
-        }
 
         return view
     }
 
-    private fun fetchFilieres() {
-        val url = "http://192.168.0.106:5000/filieres"
-
-        Log.d(TAG, "Envoi de la requête GET à $url")
-
-        val request = JsonArrayRequest(
-            Request.Method.GET, url, null,
-            { response ->
-                Log.d(TAG, "Réponse reçue: $response")
-                handleFilieresResponse(response)
-            },
-            { error ->
-                val statusCode = error.networkResponse?.statusCode
-                Log.e(TAG, "Erreur Volley - Code: $statusCode, Message: ${error.message}")
-                Toast.makeText(requireContext(), "Erreur lors de la récupération des filières", Toast.LENGTH_LONG).show()
-            }
-        )
-
-        Volley.newRequestQueue(requireContext()).add(request)
+    private fun initViews(view: View) {
+        spinnerFilieres = view.findViewById(R.id.spinnerFilieres)
+        nomSalleEditText = view.findViewById(R.id.nomSalle)
+        btnValiderSalle = view.findViewById(R.id.btnSalle)
+        listViewSalles = view.findViewById(R.id.listeSalles)
     }
 
-    private fun handleFilieresResponse(response: JSONArray) {
-        filiereList.clear()
-        filiereIdList.clear()
+    private fun setupAdapters() {
+        salleAdapter = SalleAdapter(requireContext(), salleList)
+        listViewSalles.adapter = salleAdapter
 
-        for (i in 0 until response.length()) {
-            val filiere = response.getJSONObject(i)
-            val id = filiere.getInt("id")
-            val nom = filiere.getString("nom")
-            filiereList.add(nom)
-            filiereIdList.add(id)
-        }
-
-        val adapter = ArrayAdapter(
+        val filiereAdapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
             filiereList
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        spinnerFilieres.adapter = filiereAdapter
+    }
 
-        spinnerFilieres.adapter = adapter
+    private fun setupListeners() {
+        btnValiderSalle.setOnClickListener { enregistrerSalle() }
+
+        spinnerFilieres.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (position != Spinner.INVALID_POSITION) {
+                    fetchSalles(filiereIdList[position])
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun fetchFilieres() {
+        val url = "$BASE_URL/filieres"
+
+        Volley.newRequestQueue(requireContext()).add(
+            JsonArrayRequest(
+                Request.Method.GET, url, null,
+                { response ->
+                    filiereList.clear()
+                    filiereIdList.clear()
+
+                    for (i in 0 until response.length()) {
+                        val filiere = response.getJSONObject(i)
+                        filiereList.add(filiere.getString("nom"))
+                        filiereIdList.add(filiere.getInt("id"))
+                    }
+
+                    (spinnerFilieres.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                },
+                { error ->
+                    showToast("Erreur de chargement des filières")
+                    Log.e(TAG, "Fetch filières error: ${error.message}")
+                }
+            )
+        )
+    }
+
+    private fun fetchSalles(filiereId: Int) {
+        val url = "$BASE_URL/salles/filiere/$filiereId"
+
+        Volley.newRequestQueue(requireContext()).add(
+            JsonArrayRequest(
+                Request.Method.GET, url, null,
+                { response ->
+                    salleList.clear()
+                    for (i in 0 until response.length()) {
+                        val salle = response.getJSONObject(i)
+                        salleList.add(
+                            Salle(
+                                salle.getInt("id"),
+                                salle.getString("nom"),
+                                filiereId
+                            )
+                        )
+                    }
+                    salleAdapter.notifyDataSetChanged()
+                },
+                { error ->
+                    showToast("Erreur de chargement des salles")
+                    Log.e(TAG, "Fetch salles error: ${error.message}")
+                }
+            )
+        )
     }
 
     private fun enregistrerSalle() {
@@ -93,37 +139,99 @@ class SalleFragment : Fragment(){
         val position = spinnerFilieres.selectedItemPosition
 
         if (nomSalle.isEmpty() || position == Spinner.INVALID_POSITION) {
-            Toast.makeText(requireContext(), "Veuillez entrer un nom de Salle et choisir une filière", Toast.LENGTH_LONG).show()
+            showToast("Veuillez remplir tous les champs")
             return
         }
 
         val filiereId = filiereIdList[position]
+        val url = "$BASE_URL/salles"
+        val jsonBody = JSONObject().apply {
+            put("nom", nomSalle)
+            put("filiere_id", filiereId)
+        }
 
-        val url = "http://192.168.0.106:5000/salles"
+        Volley.newRequestQueue(requireContext()).add(
+            JsonObjectRequest(
+                Request.Method.POST, url, jsonBody,
+                { response ->
+                    nomSalleEditText.text.clear()
+                    fetchSalles(filiereId)
+                    showToast("Salle ajoutée avec succès")
+                },
+                { error ->
+                    handlePostError(error)
+                }
+            )
+        )
+    }
 
-        val jsonBody = JSONObject()
-        jsonBody.put("nom", nomSalle)
-        jsonBody.put("filiere_id", filiereId)
+    private fun deleteSalle(salleId: Int, position: Int) {
+        val url = "$BASE_URL/salles/$salleId"
 
-        Log.d(TAG, "Envoi de la requête POST à $url avec données: $jsonBody")
-
-        val request = JsonObjectRequest(
-            Request.Method.POST, url, jsonBody,
-            { response ->
-                val message = response.optString("message", "Salle ajouté avec succès")
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                Log.d(TAG, "Salle ajouté avec succès: $response")
-                // Nettoyer les champs
-                nomSalleEditText.text.clear()
-                spinnerFilieres.setSelection(0)
-            },
-            { error ->
-                val statusCode = error.networkResponse?.statusCode
-                Log.e(TAG, "Erreur Volley - Code: $statusCode, Message: ${error.message}")
-                Toast.makeText(requireContext(), "Erreur lors de l'ajout du Salle", Toast.LENGTH_LONG).show()
+        Volley.newRequestQueue(requireContext()).add(
+            object : JsonObjectRequest(
+                Request.Method.DELETE, url, null,
+                { _ ->
+                    salleList.removeAt(position)
+                    salleAdapter.notifyDataSetChanged()
+                    showToast("Salle supprimée")
+                },
+                { error ->
+                    showToast("Échec de la suppression")
+                    Log.e(TAG, "Delete error: ${error.message}")
+                }
+            ) {
+                override fun getHeaders() = hashMapOf("Content-Type" to "application/json")
             }
         )
+    }
 
-        Volley.newRequestQueue(requireContext()).add(request)
+    private inner class SalleAdapter(
+        context: Context,
+        private val items: List<Salle>
+    ) : ArrayAdapter<Salle>(context, R.layout.ist_item_salle, items) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val viewHolder: ViewHolder
+            val view = convertView ?: LayoutInflater.from(context).inflate(
+                R.layout.ist_item_salle,
+                parent,
+                false
+            ).also {
+                viewHolder = ViewHolder(
+                    it.findViewById(R.id.tvSalleName),
+                    it.findViewById(R.id.iconDelete)
+                )
+                it.tag = viewHolder
+            } ?: throw IllegalStateException("View cannot be null")
+
+            val holder = view.tag as ViewHolder
+            val salle = getItem(position)
+
+            holder.tvName.text = salle?.nom ?: ""
+            holder.btnDelete.setOnClickListener {
+                salle?.let { deleteSalle(it.id, position) }
+            }
+
+            return view
+        }
+
+        private inner class ViewHolder(
+            val tvName: TextView,
+            val btnDelete: ImageView
+        )
+    }
+
+    private fun handlePostError(error: com.android.volley.VolleyError) {
+        val message = when (error.networkResponse?.statusCode) {
+            400 -> "Données invalides"
+            else -> "Erreur réseau: ${error.message}"
+        }
+        showToast(message)
+        Log.e(TAG, "POST Error: ${error.networkResponse?.data?.decodeToString()}")
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

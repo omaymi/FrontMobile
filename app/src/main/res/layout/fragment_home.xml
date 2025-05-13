@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Spinner pour sélectionner la filière -->
+
+    <!-- HorizontalScrollView pour le défilement horizontal -->
+
+    <Spinner
+        android:id="@+id/spinnerFilieres"
+        android:layout_width="118dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:textAlignment="center"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@drawable/spinner_popup_background" />
+    <!-- Spinner pour sélectionner le mois -->
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Titres des colonnes enveloppés dans un CardView -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                card_view:cardCornerRadius="8dp"
+                card_view:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#CCCCCC"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Proffesseur"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Module"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Salle"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Date"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Début"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Fin"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Scan"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Etudiants 'P'"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Supprimmer"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- RecyclerView pour afficher les séances -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewSeances"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <Spinner
+        android:id="@+id/spinnerMonths"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:textAlignment="center"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@drawable/spinner_popup_background" />
+
+    <!-- PieChart pour afficher le donut chart -->
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/donutChart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="15dp"
+        tools:ignore="MissingClass" />
+</LinearLayout>
