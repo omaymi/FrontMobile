@@ -81,7 +81,7 @@ class HomeFragment : Fragment() {
                         Toast.makeText(requireContext(), "Erreur: ID de séance invalide", Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
                     }
-                    val deleteUrl = "http://192.168.43.18:5000/seance/$seanceId"
+                    val deleteUrl = "http://100.70.32.157:5000/seance/$seanceId"
 
                     val deleteRequest = object : StringRequest(
                         Method.DELETE, deleteUrl,
@@ -136,7 +136,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchFilieres() {
-        val url = "http://192.168.43.18:5000/filieres"
+        val url = "http://100.70.32.157:5000/filieres"
         val request = JsonArrayRequest(Request.Method.GET, url, null,
             { response ->
                 filiereList.clear()
@@ -173,13 +173,13 @@ class HomeFragment : Fragment() {
 
     private fun fetchNumberOfStudents(filiereId: Int, callback: () -> Unit) {
         // Endpoint hypothétique pour le nombre d'étudiants
-        // Remplacer par le vrai endpoint, par exemple: "http://192.168.43.18:5000/filieres/$filiereId/etudiants"
+        // Remplacer par le vrai endpoint, par exemple: "http://100.70.32.157:5000/filieres/$filiereId/etudiants"
         numberOfStudents = 22 // À remplacer par une requête API si disponible
         callback()
     }
 
     private fun fetchSeancesByFiliere(filiereId: Int) {
-        val url = "http://192.168.43.18:5000/seances/filiere/$filiereId"
+        val url = "http://100.70.32.157:5000/seances/filiere/$filiereId"
         val request = JsonArrayRequest(Request.Method.GET, url, null,
             { response ->
                 seancesList.clear()
@@ -227,7 +227,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchPresencesForSeance(seanceId: Int, callback: () -> Unit) {
-        val url = "http://192.168.43.18:5000/seance/$seanceId/etudiants_presents"
+        val url = "http://100.70.32.157:5000/seance/$seanceId/etudiants_presents"
         val request = JsonArrayRequest(Request.Method.GET, url, null,
             { response ->
                 presencesMap[seanceId] = response.length()
@@ -263,7 +263,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchEtudiantsPresents(seanceId: Int) {
-        val url = "http://192.168.43.18:5000/seance/$seanceId/etudiants_presents"
+        val url = "http://100.70.32.157:5000/seance/$seanceId/etudiants_presents"
         val request = JsonArrayRequest(Request.Method.GET, url, null,
             { response ->
                 val etudiants = mutableListOf<String>()

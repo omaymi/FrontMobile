@@ -57,7 +57,7 @@ class DefaultFragment : Fragment() {
 
                 holderView.iconDelete.setOnClickListener {
                     val seanceId = seance.getInt("id")
-                    val deleteUrl = "http://192.168.43.18:5000/seance/$seanceId"
+                    val deleteUrl = "http://100.70.32.157:5000/seance/$seanceId"
 
                     val requestQueue = Volley.newRequestQueue(requireContext())
 
@@ -100,7 +100,7 @@ class DefaultFragment : Fragment() {
         return view
     }
     private fun fetchEtudiantsPresents(seanceId: Int) {
-        val url = "http://192.168.43.18:5000/seance/$seanceId/etudiants_presents"
+        val url = "http://100.70.32.157:5000/seance/$seanceId/etudiants_presents"
         val request = JsonArrayRequest(Request.Method.GET, url, null,
             { response ->
                 val etudiants = mutableListOf<String>()
@@ -127,7 +127,7 @@ class DefaultFragment : Fragment() {
     }
 
     private fun fetchSeances() {
-        val url = "http://192.168.43.18:5000/seance/professeur/$profId"
+        val url = "http://100.70.32.157:5000/seance/professeur/$profId"
         Log.d("URL_DEBUG", url)
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,

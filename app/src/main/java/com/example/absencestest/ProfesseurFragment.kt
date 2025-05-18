@@ -30,7 +30,7 @@ class ProfesseurFragment : Fragment() {
     private var isPasswordVisible = false
 
     private val TAG = "ProfesseurFragment"
-    private val BASE_URL = "http://192.168.43.18:5000"
+    private val BASE_URL = "http://100.70.32.157:5000"
 
     private val filiereList = mutableListOf<String>()
     private val filiereIdList = mutableListOf<Int>()

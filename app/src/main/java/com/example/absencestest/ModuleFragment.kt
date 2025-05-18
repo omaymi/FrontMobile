@@ -82,7 +82,7 @@ class ModuleFragment : Fragment() {
     }
 
     private fun fetchFilieres() {
-        val url = "http://192.168.43.18:5000/filieres"
+        val url = "http://100.70.32.157:5000/filieres"
 
         Volley.newRequestQueue(requireContext()).add(
             JsonArrayRequest(
@@ -108,7 +108,7 @@ class ModuleFragment : Fragment() {
     }
 
     private fun fetchModules(filiereId: Int) {
-        val url = "http://192.168.43.18:5000/modules/filiere/$filiereId"
+        val url = "http://100.70.32.157:5000/modules/filiere/$filiereId"
 
         Volley.newRequestQueue(requireContext()).add(
             JsonArrayRequest(
@@ -145,7 +145,7 @@ class ModuleFragment : Fragment() {
         }
 
         val filiereId = filiereIdList[position]
-        val url = "http://192.168.43.18:5000/modules"
+        val url = "http://100.70.32.157:5000/modules"
         val jsonBody = JSONObject().apply {
             put("nom", nom)
             put("filiere_id", filiereId)
@@ -167,7 +167,7 @@ class ModuleFragment : Fragment() {
     }
 
     private fun deleteModule(moduleId: Int, position: Int) {
-        val url = "http://192.168.43.18:5000/modules/$moduleId"
+        val url = "http://100.70.32.157:5000/modules/$moduleId"
 
         Volley.newRequestQueue(requireContext()).add(
             object : JsonObjectRequest(

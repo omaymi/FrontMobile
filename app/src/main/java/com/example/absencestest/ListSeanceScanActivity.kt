@@ -54,7 +54,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
                 // Listener pour supprimer
                 holderView.iconDelete.setOnClickListener {
                     val seanceId = seance.getInt("id")
-                    val deleteUrl = "http://192.168.43.18:5000/seance/$seanceId"
+                    val deleteUrl = "http://100.70.32.157:5000/seance/$seanceId"
 
                     val requestQueue = Volley.newRequestQueue(this@ListSeanceScanActivity)
 
@@ -100,7 +100,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
     }
 
     private fun fetchEtudiantsPresents(seanceId: Int) {
-        val url = "http://192.168.43.18:5000/seance/$seanceId/etudiants_presents"
+        val url = "http://100.70.32.157:5000/seance/$seanceId/etudiants_presents"
         val request = JsonArrayRequest(Request.Method.GET, url, null,
             { response ->
                 val etudiants = mutableListOf<String>()
@@ -127,7 +127,7 @@ class ListSeanceScanActivity : AppCompatActivity() {
 
 
     private fun fetchSeances() {
-        val url = "http://192.168.43.18:5000/seance"
+        val url = "http://100.70.32.157:5000/seance"
 
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,

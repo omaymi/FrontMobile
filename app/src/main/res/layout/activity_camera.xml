@@ -33,7 +33,7 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_scan"
         android:contentDescription="@string/d_marrer_le_scan"
-        android:onClick="onStreamClick"
+        android:onClick="onScanClick"
         app:backgroundTint="@color/beige_fonce"
         app:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"

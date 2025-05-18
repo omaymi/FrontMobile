@@ -102,7 +102,7 @@ class FiliereFragment : Fragment() {
     }
 
     private fun deleteFiliere(id: Int, position: Int) {
-        val url = "http://192.168.43.18:5000/filieres/$id"
+        val url = "http://100.70.32.157:5000/filieres/$id"
 
         val request = object : JsonObjectRequest(
             Method.DELETE, url, null,
@@ -126,7 +126,7 @@ class FiliereFragment : Fragment() {
     }
 
     private fun fetchFilieres() {
-        val url = "http://192.168.43.18:5000/filieres"
+        val url = "http://100.70.32.157:5000/filieres"
 
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -153,7 +153,7 @@ class FiliereFragment : Fragment() {
     }
 
     private fun sendFiliereRequest(nom: String) {
-        val url = "http://192.168.43.18:5000/filieres"
+        val url = "http://100.70.32.157:5000/filieres"
         val jsonBody = JSONObject().apply { put("nom", nom) }
 
         val request = JsonObjectRequest(
